@@ -256,7 +256,6 @@ extern "C"
 
     __declspec(dllexport) void DecompressBuffer(unsigned char* InputBuffer, unsigned char* OutputBuffer)
     {
-        // Input buffer must be trimmed so that the array begins with the SACompGC string
         DecompressBuffer_int(InputBuffer, OutputBuffer);
     }
 }
