@@ -1,14 +1,10 @@
 #include <iostream>
 #include <intrin.h>
 
-uint32_t __inline clz(uint32_t value)
-{
-    unsigned long index = 0;
-    return _BitScanReverse(&index, value) ? 31 - index : 32;
-}
 #define uint unsigned int
 #define byte unsigned char
-int DAT_800c4640 = 0;
+#define _BYTE unsigned char
+#define _DWORD unsigned int
 
 struct astruct
 {
@@ -30,6 +26,15 @@ struct astruct
     byte field_0x2d;
     int field_0x2e;
 };
+
+int DecompressedData = 0;
+astruct* PointerTest;
+
+uint32_t __inline clz(uint32_t value)
+{
+    unsigned long index = 0;
+    return _BitScanReverse(&index, value) ? 31 - index : 32;
+}
 
 void ToBigEndian(int* num) //same here
 {
@@ -70,10 +75,6 @@ int ToBigEndian(int num) //same here
 /* WARNING: Variable defined which should be unmapped: uStack72 */
 /* WARNING: Heritage AFTER dead removal. Example location: s0xffffffb8 : 0x80006578 */
 /* WARNING: Restarted to delay deadcode elimination for space: stack */
-astruct* PointerTest;
-
-#define _BYTE unsigned char
-#define _DWORD unsigned int
 
 unsigned int __fastcall ProcessBuffer(unsigned int a1)
 {
@@ -217,26 +218,28 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
     fread(InputBuffer, 1, outputSize, f);
     fclose(f);
 
-    int iVar4 = (int)InputBuffer;
+    int SACompGCData = (int)InputBuffer;
 
-    if (*(uint*)iVar4 != 0x6F436153) {
-        ToBigEndian((int*)iVar4);
-        iVar4 += 8 + *(uint*)iVar4;
+    if (*(uint*)SACompGCData != 0x6F436153)
+    {
+        do
+            SACompGCData++;
+        while (*(uint*)SACompGCData != 0x6F436153);
     }
+    
+    ToBigEndian((int*)(SACompGCData + 8));
 
-    ToBigEndian((int*)(iVar4 + 8));
-
-    int size = (*(uint*)(iVar4 + 8) & 0xfffffff);
+    int size = (*(uint*)(SACompGCData + 8) & 0xfffffff);
     //13a7f
-    DAT_800c4640 = (int)malloc(size);
-    memset((void*)DAT_800c4640, 0, size);
-    DecompressBuffer_int((unsigned char*)iVar4, (unsigned char*)DAT_800c4640);
+    DecompressedData = (int)malloc(size);
+    memset((void*)DecompressedData, 0, size);
+    DecompressBuffer_int((unsigned char*)SACompGCData, (unsigned char*)DecompressedData);
     fopen_s(&f, filename_dst, "wb");
-    fwrite((void*)DAT_800c4640, 1, size, f);
+    fwrite((void*)DecompressedData, 1, size, f);
     fclose(f);
 
     free(InputBuffer);
-    free((void*)DAT_800c4640);
+    free((void*)DecompressedData);
 }
 
 int main(int argc, char* argv[])
