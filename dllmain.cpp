@@ -199,6 +199,20 @@ void DecompressBuffer_int(byte* input_ptr, byte* output_ptr)
     v6->field_0x2c = 1;
 }
 
+uint GetDecompressedSize_int(unsigned char* InputBuffer)
+{
+    int SACompGCData = (int)InputBuffer;
+
+    if (*(uint*)SACompGCData != 0x6F436153)
+    {
+        do
+            SACompGCData++;
+        while (*(uint*)SACompGCData != 0x6F436153);
+    }
+    ToBigEndian((int*)(SACompGCData + 8));
+    return (*(uint*)(SACompGCData + 8) & 0xfffffff);
+}
+
 void DecompressFile_int(const char* filename_src, const char* filename_dst)
 {
     int outputSize;
@@ -233,11 +247,12 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
     //13a7f
     DecompressedData = (int)malloc(size);
     memset((void*)DecompressedData, 0, size);
+
     DecompressBuffer_int((unsigned char*)SACompGCData, (unsigned char*)DecompressedData);
     fopen_s(&f, filename_dst, "wb");
     fwrite((void*)DecompressedData, 1, size, f);
     fclose(f);
-
+    //std::cout << "Size:" << size << std::endl;
     free(InputBuffer);
     free((void*)DecompressedData);
 }
@@ -249,6 +264,11 @@ int main(int argc, char* argv[])
 
 extern "C"
 {
+    __declspec(dllexport) uint GetDecompressedSize(unsigned char* InputBuffer)
+    {
+        return GetDecompressedSize_int(InputBuffer);
+    }
+
     __declspec(dllexport) void DecompressFile(const char* filename_src, const char* filename_dst)
     {
         DecompressFile_int(filename_src, filename_dst);
