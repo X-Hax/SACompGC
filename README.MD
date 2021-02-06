@@ -6,4 +6,4 @@ The code can be compiled as either a program or a DLL. The command line program 
 
 `SACompGC InputFile.rel OutputFile.rel`
 
-Original decompilation and code by @Exant64
+Original decompilation and code by [Exant64](https://github.com/Exant64)
