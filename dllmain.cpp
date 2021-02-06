@@ -1,29 +1,24 @@
 #include <iostream>
 #include <intrin.h>
 
-#define uint unsigned int
-#define byte unsigned char
-#define _BYTE unsigned char
-#define _DWORD unsigned int
-
 struct astruct
 {
-    uint field_0x0;
-    uint field_0x4;
-    uint field_0x8;
-    uint field_0xc;
-    uint field_0x10;
-    uint field_0x14;
-    uint field_0x18;
-    uint field_0x1c;
-    uint field_0x20;
-    uint field_0x24;
-    byte field_0x28;
-    byte field_0x29;
-    byte field_0x2a;
-    byte field_0x2b;
-    byte field_0x2c;
-    byte field_0x2d;
+    unsigned int field_0x0;
+    unsigned int field_0x4;
+    unsigned int field_0x8;
+    unsigned int field_0xc;
+    unsigned int field_0x10;
+    unsigned int field_0x14;
+    unsigned int field_0x18;
+    unsigned int field_0x1c;
+    unsigned int field_0x20;
+    unsigned int field_0x24;
+    unsigned char field_0x28;
+    unsigned char field_0x29;
+    unsigned char field_0x2a;
+    unsigned char field_0x2b;
+    unsigned char field_0x2c;
+    unsigned char field_0x2d;
     int field_0x2e;
 };
 
@@ -72,10 +67,6 @@ int ToBigEndian(int num) //same here
     floatToConvert[3] = returnFloat[3];
 }
 
-/* WARNING: Variable defined which should be unmapped: uStack72 */
-/* WARNING: Heritage AFTER dead removal. Example location: s0xffffffb8 : 0x80006578 */
-/* WARNING: Restarted to delay deadcode elimination for space: stack */
-
 unsigned int __fastcall ProcessBuffer(unsigned int a1)
 {
     int v1; // r13
@@ -99,7 +90,7 @@ unsigned int __fastcall ProcessBuffer(unsigned int a1)
         {
             v7 = v2->field_0x8;
             v8 = v2->field_0x14;
-            v9 = ToBigEndian(*(_DWORD*)(v8 + v7));
+            v9 = ToBigEndian(*(unsigned int*)(v8 + v7));
             v2->field_0xc = v9;
             v2->field_0x8 = v7 + 4;
             v5 |= v9 << (32 - v6) >> (32 - v6);
@@ -126,21 +117,26 @@ unsigned int __fastcall ProcessBuffer(unsigned int a1)
     return v5;
 }
 
-void DecompressBuffer_int(byte* input_ptr, byte* output_ptr)
+void FreeBuffer_int(void* buffer)
+{
+    free(buffer);
+}
+
+void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
 {
     unsigned int v3; // r28
     int v4; // r29
     int v5; // r28
     astruct* v6; // r26
     unsigned char v7; // r3
-    _BYTE* v8; // r5
+    unsigned char* v8; // r5
     int v9; // r27
     int v10; // r6
     unsigned int v11; // r4
     unsigned char v12; // r0
     unsigned int v13; // r3
     unsigned int v14; // ctr
-    _BYTE* v15; // r4
+    unsigned char* v15; // r4
     astruct v16; // [sp+8h] [-48h] BYREF
 
     PointerTest = &v16;
@@ -148,21 +144,21 @@ void DecompressBuffer_int(byte* input_ptr, byte* output_ptr)
     v3 = (int)PointerTest;
     v16.field_0x2a = input_ptr[12];
     v16.field_0x2b = input_ptr[13];
-    *(_BYTE*)(v3 + 45) = input_ptr[8] >> 6;
-    *(_DWORD*)((int)PointerTest + 8) = 16;
-    v4 = *((_DWORD*)input_ptr + 2) & 0xFFFFFFF;
-    *(_DWORD*)(int)PointerTest = v4;
-    *(_DWORD*)((int)PointerTest + 4) = v4;
-    v5 = *((_DWORD*)input_ptr + 2) & 0xFFFFFFF;
-    *(_BYTE*)((int)PointerTest + 40) = -1;
-    *(_DWORD*)((int)PointerTest + 16) = (int)output_ptr;
-    *(_DWORD*)((int)PointerTest + 32) = (int)output_ptr;
-    *(_DWORD*)((int)PointerTest + 24) = (_DWORD)input_ptr;
-    *(_DWORD*)((int)PointerTest + 20) = (_DWORD)input_ptr;
-    *(_DWORD*)((int)PointerTest + 28) = (_DWORD)&input_ptr[(v5 + 47) & 0xFFFFFFE0];
-    *(_BYTE*)((int)PointerTest + 44) = 0;
-    *(_BYTE*)((int)PointerTest + 41) = 0;
-    *(_DWORD*)((int)PointerTest + 12) = 0;
+    *(unsigned char*)(v3 + 45) = input_ptr[8] >> 6;
+    *(unsigned int*)((int)PointerTest + 8) = 16;
+    v4 = *((unsigned int*)input_ptr + 2) & 0xFFFFFFF;
+    *(unsigned int*)(int)PointerTest = v4;
+    *(unsigned int*)((int)PointerTest + 4) = v4;
+    v5 = *((unsigned int*)input_ptr + 2) & 0xFFFFFFF;
+    *(unsigned char*)((int)PointerTest + 40) = -1;
+    *(unsigned int*)((int)PointerTest + 16) = (int)output_ptr;
+    *(unsigned int*)((int)PointerTest + 32) = (int)output_ptr;
+    *(unsigned int*)((int)PointerTest + 24) = (unsigned int)input_ptr;
+    *(unsigned int*)((int)PointerTest + 20) = (unsigned int)input_ptr;
+    *(unsigned int*)((int)PointerTest + 28) = (unsigned int)&input_ptr[(v5 + 47) & 0xFFFFFFE0];
+    *(unsigned char*)((int)PointerTest + 44) = 0;
+    *(unsigned char*)((int)PointerTest + 41) = 0;
+    *(unsigned int*)((int)PointerTest + 12) = 0;
     v6 = (astruct*)(int)PointerTest;
     while (ProcessBuffer(1u))
     {
@@ -185,7 +181,7 @@ void DecompressBuffer_int(byte* input_ptr, byte* output_ptr)
     if (!((v13 >> 31) | (v11 << clzsd >> 31)))
     {
         v14 = v10;
-        v15 = (_BYTE*)v6->field_0x20;
+        v15 = (unsigned char*)v6->field_0x20;
         do
         {
 
@@ -199,18 +195,18 @@ void DecompressBuffer_int(byte* input_ptr, byte* output_ptr)
     v6->field_0x2c = 1;
 }
 
-uint GetDecompressedSize_int(unsigned char* InputBuffer)
+unsigned int GetDecompressedSize_int(unsigned char* InputBuffer)
 {
     int SACompGCData = (int)InputBuffer;
 
-    if (*(uint*)SACompGCData != 0x6F436153)
+    if (*(unsigned int*)SACompGCData != 0x6F436153)
     {
         do
             SACompGCData++;
-        while (*(uint*)SACompGCData != 0x6F436153);
+        while (*(unsigned int*)SACompGCData != 0x6F436153);
     }
     ToBigEndian((int*)(SACompGCData + 8));
-    return (*(uint*)(SACompGCData + 8) & 0xfffffff);
+    return (*(unsigned int*)(SACompGCData + 8) & 0xfffffff);
 }
 
 void DecompressFile_int(const char* filename_src, const char* filename_dst)
@@ -234,17 +230,15 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
 
     int SACompGCData = (int)InputBuffer;
 
-    if (*(uint*)SACompGCData != 0x6F436153)
+    if (*(unsigned int*)SACompGCData != 0x6F436153)
     {
         do
             SACompGCData++;
-        while (*(uint*)SACompGCData != 0x6F436153);
+        while (*(unsigned int*)SACompGCData != 0x6F436153);
     }
-    
-    ToBigEndian((int*)(SACompGCData + 8));
 
-    int size = (*(uint*)(SACompGCData + 8) & 0xfffffff);
-    //13a7f
+    ToBigEndian((int*)(SACompGCData + 8));
+    int size = (*(unsigned int*)(SACompGCData + 8) & 0xfffffff);
     DecompressedData = (int)malloc(size);
     memset((void*)DecompressedData, 0, size);
 
@@ -252,8 +246,7 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
     fopen_s(&f, filename_dst, "wb");
     fwrite((void*)DecompressedData, 1, size, f);
     fclose(f);
-    //std::cout << "Size:" << size << std::endl;
-    free(InputBuffer);
+    free((void*)InputBuffer);
     free((void*)DecompressedData);
 }
 
@@ -264,7 +257,7 @@ int main(int argc, char* argv[])
 
 extern "C"
 {
-    __declspec(dllexport) uint GetDecompressedSize(unsigned char* InputBuffer)
+    __declspec(dllexport) unsigned int GetDecompressedSize(unsigned char* InputBuffer)
     {
         return GetDecompressedSize_int(InputBuffer);
     }
@@ -277,5 +270,10 @@ extern "C"
     __declspec(dllexport) void DecompressBuffer(unsigned char* InputBuffer, unsigned char* OutputBuffer)
     {
         DecompressBuffer_int(InputBuffer, OutputBuffer);
+    }
+
+    __declspec(dllexport) void FreeBuffer(void* buffer)
+    {
+        FreeBuffer_int(buffer);
     }
 }
