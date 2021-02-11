@@ -252,7 +252,20 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
 
 int main(int argc, char* argv[])
 {
+    if (argc < 2)
+    {
+        std::cout << "Usage: SaCompGC <file.rel> [decompressed.rel]";
+        return 0;
+    }
+    else if (argc == 2)
+    {
+        std::string outFileName = std::string(argv[1]);
+        outFileName += ".dec";
+        DecompressFile_int(argv[1], outFileName.c_str());
+        return 0;
+    }
     DecompressFile_int(argv[1], argv[2]);
+    return 0;
 }
 
 extern "C"
