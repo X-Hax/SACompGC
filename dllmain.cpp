@@ -195,7 +195,7 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
     v6->field_0x2c = 1;
 }
 
-unsigned int GetDecompressedSize_int(unsigned char* InputBuffer)
+unsigned int GetDecompressedSize_int(void* InputBuffer)
 {
     int SACompGCData = (int)InputBuffer;
 
@@ -270,22 +270,22 @@ int main(int argc, char* argv[])
 
 extern "C"
 {
-    __declspec(dllexport) unsigned int GetDecompressedSize(unsigned char* InputBuffer)
+    __declspec(dllexport) unsigned int __cdecl GetDecompressedSize(void* InputBuffer)
     {
         return GetDecompressedSize_int(InputBuffer);
     }
 
-    __declspec(dllexport) void DecompressFile(const char* filename_src, const char* filename_dst)
+    __declspec(dllexport) void __cdecl DecompressFile(const char* filename_src, const char* filename_dst)
     {
         DecompressFile_int(filename_src, filename_dst);
     }
 
-    __declspec(dllexport) void DecompressBuffer(unsigned char* InputBuffer, unsigned char* OutputBuffer)
+    __declspec(dllexport) void __cdecl DecompressBuffer(void* InputBuffer, void* OutputBuffer)
     {
-        DecompressBuffer_int(InputBuffer, OutputBuffer);
+        DecompressBuffer_int((unsigned char*)InputBuffer, (unsigned char*)OutputBuffer);
     }
 
-    __declspec(dllexport) void FreeBuffer(void* buffer)
+    __declspec(dllexport) void __cdecl FreeBuffer(void* buffer)
     {
         FreeBuffer_int(buffer);
     }
