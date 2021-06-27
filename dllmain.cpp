@@ -7,11 +7,11 @@ struct astruct
     unsigned int field_0x4;
     unsigned int field_0x8;
     unsigned int field_0xc;
-    unsigned int field_0x10;
-    unsigned int field_0x14;
-    unsigned int field_0x18;
-    unsigned int field_0x1c;
-    unsigned int field_0x20;
+    unsigned char* field_0x10;
+    unsigned char* field_0x14;
+    unsigned char* field_0x18;
+    unsigned char* field_0x1c;
+    unsigned char* field_0x20;
     unsigned int field_0x24;
     unsigned char field_0x28;
     unsigned char field_0x29;
@@ -76,9 +76,9 @@ unsigned int __fastcall ProcessBuffer(unsigned int a1)
     unsigned int v5; // r10
     char v6; // r29
     unsigned int v7; // r3
-    unsigned int v8; // r8
+    unsigned char* v8; // r8
     unsigned int v9; // r7
-    unsigned int v10; // r0
+    unsigned char* v10; // r0
 
     v2 = PointerTest;
     v3 = v2->field_0x29;
@@ -124,7 +124,6 @@ void FreeBuffer_int(void* buffer)
 
 void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
 {
-    unsigned int v3; // r28
     int v4; // r29
     int v5; // r28
     astruct* v6; // r26
@@ -132,7 +131,7 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
     unsigned char* v8; // r5
     int v9; // r27
     int v10; // r6
-    unsigned int v11; // r4
+    uintptr_t v11; // r4
     unsigned char v12; // r0
     unsigned int v13; // r3
     unsigned int v14; // ctr
@@ -141,25 +140,24 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
 
     PointerTest = &v16;
     memset(PointerTest, 0, sizeof(astruct));
-    v3 = (int)PointerTest;
     v16.field_0x2a = input_ptr[12];
     v16.field_0x2b = input_ptr[13];
-    *(unsigned char*)(v3 + 45) = input_ptr[8] >> 6;
-    *(unsigned int*)((int)PointerTest + 8) = 16;
+    PointerTest->field_0x2d = input_ptr[8] >> 6;
+    PointerTest->field_0x8 = 16;
     v4 = *((unsigned int*)input_ptr + 2) & 0xFFFFFFF;
-    *(unsigned int*)(int)PointerTest = v4;
-    *(unsigned int*)((int)PointerTest + 4) = v4;
+    PointerTest->field_0x0 = v4;
+    PointerTest->field_0x4 = v4;
     v5 = *((unsigned int*)input_ptr + 2) & 0xFFFFFFF;
-    *(unsigned char*)((int)PointerTest + 40) = -1;
-    *(unsigned int*)((int)PointerTest + 16) = (int)output_ptr;
-    *(unsigned int*)((int)PointerTest + 32) = (int)output_ptr;
-    *(unsigned int*)((int)PointerTest + 24) = (unsigned int)input_ptr;
-    *(unsigned int*)((int)PointerTest + 20) = (unsigned int)input_ptr;
-    *(unsigned int*)((int)PointerTest + 28) = (unsigned int)&input_ptr[(v5 + 47) & 0xFFFFFFE0];
-    *(unsigned char*)((int)PointerTest + 44) = 0;
-    *(unsigned char*)((int)PointerTest + 41) = 0;
-    *(unsigned int*)((int)PointerTest + 12) = 0;
-    v6 = (astruct*)(int)PointerTest;
+    PointerTest->field_0x28 = -1;
+    PointerTest->field_0x10 = output_ptr;
+    PointerTest->field_0x20 = output_ptr;
+    PointerTest->field_0x18 = input_ptr;
+    PointerTest->field_0x14 = input_ptr;
+    PointerTest->field_0x1c = &input_ptr[(v5 + 47) & 0xFFFFFFE0];
+    PointerTest->field_0x2c = 0;
+    PointerTest->field_0x29 = 0;
+    PointerTest->field_0xc = 0;
+    v6 = PointerTest;
     while (ProcessBuffer(1u))
     {
         v7 = ProcessBuffer(8u);
@@ -174,14 +172,14 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
     }
     v9 = ProcessBuffer(v6->field_0x2a) + 1;
     v10 = ProcessBuffer(v6->field_0x2b) + 2;
-    v11 = v6->field_0x10;
-    int clzsd = clz(v11 ^ (v6->field_0x20 - v9));
+    v11 = (uintptr_t)v6->field_0x10;
+    int clzsd = clz(v11 ^ (uintptr_t)(v6->field_0x20 - v9));
     v13 = v6->field_0x0 - v10;
     v6->field_0x0 = v13;
     if (!((v13 >> 31) | (v11 << clzsd >> 31)))
     {
         v14 = v10;
-        v15 = (unsigned char*)v6->field_0x20;
+        v15 = v6->field_0x20;
         do
         {
 
@@ -189,7 +187,7 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
             ++v15;
             --v14;
         } while (v14);
-        v6->field_0x20 = (unsigned int)v15;
+        v6->field_0x20 = v15;
         goto LABEL_8;
     }
     v6->field_0x2c = 1;
