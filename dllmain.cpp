@@ -22,7 +22,7 @@ struct astruct
     int field_0x2e;
 };
 
-int DecompressedData = 0;
+void* DecompressedData = 0;
 astruct* PointerTest;
 
 uint32_t __inline clz(uint32_t value)
@@ -173,7 +173,7 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
     v9 = ProcessBuffer(v6->field_0x2a) + 1;
     v10 = ProcessBuffer(v6->field_0x2b) + 2;
     v11 = (uintptr_t)v6->field_0x10;
-    int clzsd = clz(v11 ^ (uintptr_t)(v6->field_0x20 - v9));
+    intptr_t clzsd = clz(v11 ^ (uintptr_t)(v6->field_0x20 - v9));
     v13 = v6->field_0x0 - v10;
     v6->field_0x0 = v13;
     if (!((v13 >> 31) | (v11 << clzsd >> 31)))
@@ -195,7 +195,7 @@ void DecompressBuffer_int(unsigned char* input_ptr, unsigned char* output_ptr)
 
 unsigned int GetDecompressedSize_int(void* InputBuffer)
 {
-    int SACompGCData = (int)InputBuffer;
+    char* SACompGCData = (char*)InputBuffer;
 
     if (*(unsigned int*)SACompGCData != 0x6F436153)
     {
@@ -226,7 +226,7 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
     fread(InputBuffer, 1, outputSize, f);
     fclose(f);
 
-    int SACompGCData = (int)InputBuffer;
+    char* SACompGCData = (char*)InputBuffer;
 
     if (*(unsigned int*)SACompGCData != 0x6F436153)
     {
@@ -237,15 +237,15 @@ void DecompressFile_int(const char* filename_src, const char* filename_dst)
 
     ToBigEndian((int*)(SACompGCData + 8));
     int size = (*(unsigned int*)(SACompGCData + 8) & 0xfffffff);
-    DecompressedData = (int)malloc(size);
-    memset((void*)DecompressedData, 0, size);
+    DecompressedData = malloc(size);
+    memset(DecompressedData, 0, size);
 
     DecompressBuffer_int((unsigned char*)SACompGCData, (unsigned char*)DecompressedData);
     fopen_s(&f, filename_dst, "wb");
-    fwrite((void*)DecompressedData, 1, size, f);
+    fwrite(DecompressedData, 1, size, f);
     fclose(f);
-    free((void*)InputBuffer);
-    free((void*)DecompressedData);
+    free(InputBuffer);
+    free(DecompressedData);
 }
 
 int main(int argc, char* argv[])
